@@ -66,6 +66,11 @@ const modulesUpdate = async () => {
   for (const index in modules) {
     const module = modules[index];
     if (!module.hasOwnProperty('alias')) {
+      if (module.hasOwnProperty('version') && !versions[index]) {
+        // e.g. module was just added to cfbs.json, but the mirroring action has not updated versions.json yet
+        console.warn(`${index} is not present in versions.json, skipping`);
+        continue;
+      }
       const author = await authorResolver.resolve(module.by);
 
       // content
